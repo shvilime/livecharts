@@ -1,0 +1,34 @@
+[default]
+
+[production]
+ root_path = "@jinja {% set path = '.' | abspath %}{{ path }}/application"
+ logging = "resources/configs/dev.logging.toml"
+ uvicorn_logging = "resources/configs/uvicorn.logging.yaml"
+ route_path = ['src/application/routes']
+ quotes_interval = 1    # Периодичность отправки котировок
+
+[production.database]
+ engine = "@format postgresql+asyncpg://{this.db_user}:{this.db_password}@localhost/skanestas?"
+ [production.database.kwargs]
+  echo = true
+  future = true
+  connect_args = {timeout = 5}
+
+[production.redis]
+ engine = "redis://localhost"
+ [production.redis.kwargs]
+  db = 1
+  decode_responses=true
+  encoding="utf-8"
+
+[production.scheduler]
+ base_path = "apscheduler.schedulers.background"
+ scheduler_cls = "BackgroundScheduler"
+ [production.scheduler.kwargs]
+  timezone = "UTC"
+  job_defaults = {"coalesce" = false, max_instances = 1}
+ [production.scheduler.kwargs.executors.default]
+  type = "threadpool"
+  max_workers = "20"
+ [production.scheduler.kwargs.jobstores.default]
+  type = "memory"

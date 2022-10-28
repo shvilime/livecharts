@@ -1,0 +1,34 @@
+[default]
+
+[development]
+ root_path = "@jinja {% set path = '.' | abspath %}{{ path.split('/src')[0] }}/src/application"
+ logging = "resources/configs/dev.logging.toml"
+ uvicorn_logging = "resources/configs/uvicorn.logging.yaml"
+ route_path = ['src/application/routes']
+ quotes_interval = 100000    # Периодичность отправки котировок
+
+[development.database]
+ engine = "@format postgresql+asyncpg://{this.db_user}:{this.db_password}@167.99.138.98/skanestas?"
+ [development.database.kwargs]
+  echo = true
+  future = true
+  connect_args = {timeout = 5}
+
+[development.redis]
+ engine = "redis://167.99.138.98"
+ [development.redis.kwargs]
+  db = 1
+  decode_responses=true
+  encoding="utf-8"
+
+[development.scheduler]
+ base_path = "apscheduler.schedulers.background"
+ scheduler_cls = "BackgroundScheduler"
+ [development.scheduler.kwargs]
+  timezone = "UTC"
+  job_defaults = {"coalesce" = false, max_instances = 1}
+ [development.scheduler.kwargs.executors.default]
+  type = "threadpool"
+  max_workers = "20"
+ [development.scheduler.kwargs.jobstores.default]
+  type = "memory"

@@ -1,0 +1,16 @@
+[default]
+application = "skanestas"
+version = "1.0.0"
+host = "127.0.0.1"
+port = 8000
+
+# Настройки для FastApi
+FASTAPI_TITLE="skanestas backend"
+FASTAPI_VERSION="1.0.0"
+FASTAPI_TAGS_METADATA = []
+
+[development]
+dynaconf_include = ["*.development.*", "secrets.toml"]
+
+[production]
+dynaconf_include = ["*.production.*", "secrets.toml"]

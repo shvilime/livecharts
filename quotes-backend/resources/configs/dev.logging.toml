@@ -1,0 +1,62 @@
+version = 1
+disable_existing_loggers = false
+
+[filters]
+   [filters.ExtraInfo]
+    "()" = "application.core.log.ExtraInfoFilter"
+    version = "$__version__"    # Version number replaced from из gradle.properties
+    application = "$__name__"   # Version number replaced from из gradle.properties
+
+[formatters]
+   [formatters.standard]
+    format = '%(asctime)s %(levelname)-5s %(name)-15s | %(message)s'
+    datefmt = ''
+   [formatters.brief]
+    format = '%(message)s'
+   [formatters.extended]
+    format = '%(asctime)s [p%(process)d] %(levelname)s [%(filename)s:%(lineno)d] %(message)s'
+    datefmt = ''
+   [formatters.colored]
+    class = 'application.core.log.ColoredFormatter'
+    datefmt = ''
+    format = '%(asctime)s [p%(process)d] %(name)-15s %(levelname)-7s [%(filename)s:%(lineno)d] | %(message)s'
+
+[handlers]
+   [handlers.default]
+    class = 'logging.StreamHandler'
+    formatter = 'brief'
+    level = 'INFO'
+   [handlers.file]
+    class = 'logging.handlers.RotatingFileHandler'
+    filename = '/tmp/skanestas.log'
+    formatter = 'colored'
+    maxBytes = 10000000
+    backupCount = 10
+    level = 'DEBUG'
+    encoding = 'utf8'
+
+[root]
+ level = 'DEBUG'
+ handlers = ['default','file']
+
+[loggers]
+   [loggers.requests]
+    handlers = ['default','file']
+    level = 'ERROR'
+    propagate = false
+   [loggers.urllib3]
+    handlers = ['default','file']
+    level = 'ERROR'
+    propagate = false
+   [loggers.passlib]
+    handlers = ['default','file']
+    level = 'ERROR'
+    propagate = false
+   [loggers.apscheduler]
+    handlers = ['default','file']
+    level = 'ERROR'
+    propagate = false
+   [loggers.skanestas]
+    handlers = ['default','file']
+    level = 'DEBUG'
+    propagate = false

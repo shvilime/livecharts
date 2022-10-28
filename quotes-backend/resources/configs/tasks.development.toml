@@ -1,0 +1,13 @@
+[default]
+ dynaconf_merge = true
+
+[development]
+ dynaconf_merge = true
+ [[development.scheduler.tasks]]
+   id = "generate_quotes"
+   jobstore = "default"
+   func = "application.core.tasks:generate_quotes"
+   replace_existing = true
+   max_instances = 1
+   trigger = "interval"
+   trigger_args = {seconds = 100000}
