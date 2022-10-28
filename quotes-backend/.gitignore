@@ -1,0 +1,13 @@
+.DS_Store
+.thumbs.db
+
+# Editor directories and files
+.idea
+
+# Python workfiles
+*.pyc
+__pycache__/
+*.egg-info/
+
+# Secrets
+secrets.*
