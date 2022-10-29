@@ -3,6 +3,7 @@ import logging
 from asyncio import sleep
 from fastapi import APIRouter, WebSocket
 from starlette.websockets import WebSocketDisconnect
+from websockets.exceptions import ConnectionClosedOK
 
 from application.db.schemes import Quotes, Quote
 from application.routes import PRICES
@@ -68,7 +69,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
             await manager.send(quotes, websocket)
 
-        except WebSocketDisconnect:
+        except (WebSocketDisconnect, ConnectionClosedOK):
             manager.disconnect(websocket)
         except Exception as e:
             logging.error(f"Ошибка отправки данных {str(e)}")
