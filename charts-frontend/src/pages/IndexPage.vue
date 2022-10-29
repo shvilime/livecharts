@@ -1,10 +1,6 @@
 <template>
   <q-page class="row">
       <div class="col-12">
-        <q-toggle
-          v-model="quotesStore.allPeriod"
-          label="Весь период"
-          />
         <LineChart
         :chart-legend="'Price'"
         :chart-labels="quotesStore.labels"

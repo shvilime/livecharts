@@ -8,7 +8,13 @@
           </q-avatar>
           Skanestas Live Charts
         </q-toolbar-title>
-
+        <q-toggle
+          v-model="quotesStore.allPeriod"
+          class="q-pr-sm"
+          color="yellow"
+          checked-icon="check"
+          unchecked-icon="clear"
+          label="Весь период" />
         <q-select
           v-model="quotesStore.selectedTicker"
           square
