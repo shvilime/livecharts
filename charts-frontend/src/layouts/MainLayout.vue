@@ -14,7 +14,8 @@
           color="yellow"
           checked-icon="check"
           unchecked-icon="clear"
-          label="Весь период" />
+          label="Весь период"
+          @update:model-value="onChangeLoadTicker"/>
         <q-select
           v-model="quotesStore.selectedTicker"
           square
@@ -25,7 +26,7 @@
           :stack-label="false"
           label="Choose graph .."
           style="width: 200px"
-          @update:model-value="onChangeTicker"/>
+          @update:model-value="onChangeLoadTicker"/>
       </q-toolbar>
     </q-header>
 
@@ -59,7 +60,7 @@ async function loadTickers() {
   }
 }
 
-async function onChangeTicker() {
+async function onChangeLoadTicker() {
   try {
     // получим с бэка пачку исторических котировок для заполнения начальных данных
     const quotes = await apiGetPrices(
