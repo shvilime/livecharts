@@ -5,28 +5,48 @@
         :chart-legend="'Price'"
         :chart-labels="quotesStore.labels"
         :chart-values="quotesStore.values"
+        :chart-width=$q.screen.width
+        :chart-height=$q.screen.height-100
         :chart-options="chartOptions"/>
-        <q-btn
-          v-if="quotesStore.selectedTicker && !quotesStore.allPeriod"
-          round
-          dense
-          color="brown-1"
-          icon="keyboard_arrow_left"
-          class="float-left"
-          @click="getHistoryBack"/>
-        <q-btn
-          v-if="quotesStore.selectedTicker && !quotesStore.allPeriod"
-          round
-          dense
-          color="brown-1"
-          icon="keyboard_arrow_right"
-          class="float-right"
-          @click="getHistoryForward"/>
       </div>
+
+      <!-- Кнопка показа диалога листания графика -->
+      <q-page-sticky
+        v-if="quotesStore.selectedTicker && !quotesStore.allPeriod"
+        position="top-right"
+        :offset="[18, 18]">
+        <q-btn fab icon="add" color="accent" @click="showDialogSlide = !showDialogSlide" />
+      </q-page-sticky>
+
+      <!-- Диалог для графика графика -->
+      <q-dialog v-model="showDialogSlide" position="right">
+        <q-card style="width: 350px">
+          <q-card-section class="row items-center no-wrap">
+            <div>
+              <div class="text-grey-bold">Slide graph</div>
+            </div>
+
+            <q-space />
+
+            <q-btn
+              flat
+              round
+              icon="fast_rewind"
+              @click="getHistoryBack"/>
+            <q-btn
+              flat
+              round
+              icon="fast_forward"
+              @click="getHistoryForward"/>
+          </q-card-section>
+        </q-card>
+      </q-dialog>
+
   </q-page>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { apiGetPrices } from 'api/quotes';
 import { useQuotesStore } from 'stores/quotes';
@@ -39,6 +59,8 @@ const quotesStore = useQuotesStore();
 
 // Параметры графика
 const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
   scales: {
     x: {
       ticks: {
@@ -46,8 +68,10 @@ const chartOptions = {
       },
     },
   },
-  elements: { point: { radius: 1 }, line: { borderWidth: 2 } },
+  elements: { point: { radius: 2 }, line: { borderWidth: 2 } },
 };
+// Параметр, показывать ли диалог листания графика
+const showDialogSlide = ref(false);
 
 async function getHistoryBack() {
   // Получим из хранилища дату первой доступной котировки
