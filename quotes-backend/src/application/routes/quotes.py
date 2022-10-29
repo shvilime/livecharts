@@ -30,7 +30,7 @@ async def update_prices(r: Request, movements: dict = Body(...)):
     """
     # Время обновления цен
     created: datetime = datetime.now().replace(microsecond=0)
-    r.app.state.logger.debug(f"Запрос на изменения цен {movements}")
+    r.app.state.logger.debug(f"{created.isoformat()} Запрос на изменения цен {movements}")
 
     # Обновим цены в кеше
     async with r.app.state.redis.client() as conn:
