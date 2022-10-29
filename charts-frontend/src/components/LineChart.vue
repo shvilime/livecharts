@@ -17,6 +17,8 @@ interface InterfaceChartProperties {
   chartLegend: string
   chartLabels: string[]
   chartValues: number[]
+  chartWidth: number
+  chartHeight: number
   chartOptions: ChartOptions
 }
 
@@ -50,8 +52,8 @@ const chartDataComputed = computed<ChartData>((): ChartData => ({
   <div class="chart-container">
   <Line
   chartId="line-chart"
-  :width="800"
-  :height="600"
+  :width="props.chartWidth"
+  :height="props.chartHeight"
   :chart-data="chartDataComputed"
   :chartOptions="props.chartOptions" />
   </div>
