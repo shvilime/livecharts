@@ -30,6 +30,7 @@ async def update_prices(r: Request, movements: dict = Body(...)):
     """
     # Время обновления цен
     created: datetime = datetime.now().replace(microsecond=0)
+    r.app.state.logger.debug(f"Запрос на изменения цен {movements}")
 
     # Обновим цены в кеше
     async with r.app.state.redis.client() as conn:
@@ -38,10 +39,12 @@ async def update_prices(r: Request, movements: dict = Body(...)):
         # Сложим цены и пришедшие изменения
         for key in prices.keys():
             prices[key] = int(prices[key]) + movements[key]
+        r.app.state.logger.debug(f"Цены после изменения {prices}")
+
         # Запишем актуальные цены в кеш
         await conn.hset("movement", mapping=prices)
         await conn.set("label", created.strftime(DATE_FORMAT))
-        r.app.state.logger.debug(f"Цены обновлены в кеш")
+        r.app.state.logger.debug("Цены записаны в кеш")
 
     # Запишем цены в БД
     async with r.app.state.session() as session:
@@ -50,7 +53,7 @@ async def update_prices(r: Request, movements: dict = Body(...)):
             bulk.append({"created": created, "ticker": key, "movement": movements[key], "price": prices[key]})
         await session.execute(insert(QuoteScheme, bulk))
         await session.commit()
-        r.app.state.logger.debug(f"Цены записаны в БД")
+        r.app.state.logger.debug("Цены записаны в БД")
 
     return {"result": "OK"}
 
