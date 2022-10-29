@@ -9,6 +9,7 @@
           Skanestas Live Charts
         </q-toolbar-title>
         <q-toggle
+          v-if="quotesStore.selectedTicker"
           v-model="quotesStore.allPeriod"
           class="q-pr-sm"
           color="yellow"
