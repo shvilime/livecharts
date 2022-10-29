@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, watch } from 'vue';
+import { computed } from 'vue';
 import { Line } from 'vue-chartjs';
 import {
   Chart as ChartJS,
@@ -43,11 +43,6 @@ const chartDataComputed = computed<ChartData>((): ChartData => ({
     },
   ],
 }));
-
-const chartOptions = {
-  responsive: true,
-  maintainAspectRatio: false,
-};
 
 </script>
 
