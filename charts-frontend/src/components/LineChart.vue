@@ -49,10 +49,6 @@ const chartOptions = {
   maintainAspectRatio: false,
 };
 
-const chartOptionComputed = computed<ChartOptions>((): ChartOptions => (
-  { ...chartOptions, ...props.chartOptions }
-));
-
 </script>
 
 <template>
@@ -62,6 +58,6 @@ const chartOptionComputed = computed<ChartOptions>((): ChartOptions => (
   :width="800"
   :height="600"
   :chart-data="chartDataComputed"
-  :chartOptions="chartOptionComputed" />
+  :chartOptions="props.chartOptions" />
   </div>
 </template>
