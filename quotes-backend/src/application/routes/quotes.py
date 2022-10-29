@@ -134,11 +134,19 @@ async def get_history_prices(
     # Если не задан лимит выборки, то вернем все данные после децимации
     if not limit:
         async with r.app.state.db.begin() as conn:
+            # Посчитаем количество записей в БД
+            query: str = "SELECT count(q.price) FROM public.quotes q WHERE q.ticker = :ticker"
+            cursor: Result = await conn.execute(text(query).bindparams(ticker=ticker))
+            num_records: int = cursor.scalar_one()
+
+            # Коэффициент децимации
+            factor: int = round(num_records/1000)
+
             query: str = "SELECT q.price FROM public.quotes q WHERE q.ticker = :ticker"
             cursor: Result = await conn.execute(text(query).bindparams(ticker=ticker))
             # Проведем децимацию сигнала
             data: np.ndarray = np.fromiter(cursor.yield_per(1000), dtype=np.dtype((int, 2)))[:, 0]
-            quotes.values = [Quote(ticker=ticker, value=value) for value in signal.decimate(data, 10)]
+            quotes.values = [Quote(created="", ticker=ticker, value=value) for value in signal.decimate(data, factor)]
 
         return quotes
 
