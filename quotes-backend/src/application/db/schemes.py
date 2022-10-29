@@ -1,5 +1,5 @@
-from typing import Optional
 from datetime import datetime
+from typing import Optional, Union
 from pydantic import BaseConfig, BaseModel, Field
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, DateTime
@@ -30,7 +30,7 @@ class Quote(BaseModel):
         allow_population_by_field_name = True
         orm_mode = True
 
-    created: Optional[datetime] = Field(default_factory=datetime.now)
+    created: Optional[Union[datetime, str]] = Field(default_factory=datetime.now)
     ticker: str
     price: int = Field(alias="value")
 
