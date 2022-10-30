@@ -90,4 +90,7 @@ onMounted(() => {
 #ticker-dropdown {
   color: white !important;
 }
+.q-select__dropdown-icon {
+  color: white !important;
+}
 </style>
