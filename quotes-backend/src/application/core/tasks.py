@@ -18,7 +18,7 @@ def generate_quotes():
         MOVEMENTS[key] = generate_movement()
     try:
         requests.put(
-            f"http://{settings.host}:{settings.port}/quotes/movement",
+            f"http://{settings.host}/quotes/movement",
             headers={'Content-Type': 'application/json'},
             json=MOVEMENTS,
             timeout=1,
