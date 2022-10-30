@@ -77,7 +77,7 @@ const chartOptions = {
       },
       color: 'black',
       labels: { title: { font: { weight: 'bold', size: '24px' } } },
-      textAlign: 'left',
+      align: '240',
     },
   },
   elements: { point: { radius: 2 }, line: { borderWidth: 2 } },
