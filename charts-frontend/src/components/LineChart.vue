@@ -12,6 +12,7 @@ import {
   CategoryScale,
 } from 'chart.js';
 import type { ChartOptions, ChartData } from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 interface InterfaceChartProperties {
   chartLegend: string
@@ -32,6 +33,7 @@ ChartJS.register(
   LinearScale,
   PointElement,
   CategoryScale,
+  ChartDataLabels,
 );
 
 const chartDataComputed = computed<ChartData>((): ChartData => ({

@@ -68,6 +68,15 @@ const chartOptions = {
       },
     },
   },
+  plugins: {
+    datalabels: {
+      formatter(value, context) {
+        return context.dataIndex === context.dataset.data.length - 1 ? value.y : '';
+      },
+      color: 'black',
+      labels: { title: { font: { weight: 'bold', size: '24px' } } },
+    },
+  },
   elements: { point: { radius: 2 }, line: { borderWidth: 2 } },
 };
 // Параметр, показывать ли диалог листания графика

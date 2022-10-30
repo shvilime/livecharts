@@ -13,6 +13,7 @@
   "dependencies": {
     "@quasar/extras": "^1.0.0",
     "chart.js": "^3.9.1",
+    "chartjs-plugin-datalabels": "^2.1.0",
     "ky": "^0.31.4",
     "moment": "^2.29.4",
     "pinia": "^2.0.11",
