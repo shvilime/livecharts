@@ -2,7 +2,7 @@
   <q-page class="row">
       <div class="col-12">
         <LineChart
-        :chart-legend="'Price'"
+        :chart-legend="`Price ${quotesStore.selectedTicker}`"
         :chart-labels="quotesStore.labels"
         :chart-values="quotesStore.values"
         :chart-width=$q.screen.width
