@@ -8,6 +8,7 @@ from sqlalchemy.engine import Result
 from sqlalchemy import insert, select, text
 from fastapi import APIRouter, Request, Body, HTTPException
 
+from application.core.config import settings
 from application.routes import PRICES, DATE_FORMAT
 from application.db.schemes import QuoteScheme, Quotes, Quote
 
@@ -144,7 +145,7 @@ async def get_history_prices(
             r.app.state.logger.debug(f"Количество записей по тикеру {ticker} в БД {num_records}")
 
             # Коэффициент децимации
-            factor: int = 1 if num_records < 1000 else round(num_records/1000)
+            factor: int = 1 if num_records < settings.max_chart_points else round(num_records/settings.max_chart_points)
             r.app.state.logger.debug(f"Рассчитан коэффициент децимации {factor}")
 
             query: str = "SELECT q.price FROM public.quotes q WHERE q.ticker = :ticker"

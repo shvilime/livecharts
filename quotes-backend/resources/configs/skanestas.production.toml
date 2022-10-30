@@ -5,7 +5,8 @@
  logging = "/var/www/skanestas/configs/scanestas.logging.toml"
  uvicorn_logging = "/var/www/skanestas/configs/configs/uvicorn.logging.yaml"
  route_path = ['/var/www/skanestas/application/routes']
- quotes_interval = 1    # Периодичность отправки котировок по websocket
+ max_chart_points = 1000     # Максимальное количество точек в графике за весь исторический период
+ quotes_interval = 1         # Периодичность отправки котировок по websocket
 
 [production.database]
  engine = "@format postgresql+asyncpg://{this.db_user}:{this.db_password}@localhost/skanestas?"

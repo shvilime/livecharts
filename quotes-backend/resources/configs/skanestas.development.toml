@@ -5,6 +5,7 @@
  logging = "resources/configs/dev.logging.toml"
  uvicorn_logging = "resources/configs/uvicorn.logging.yaml"
  route_path = ['src/application/routes']
+ max_chart_points = 1000     # Максимальное количество точек в графике за весь исторический период
  quotes_interval = 100000    # Периодичность отправки котировок
 
 [development.database]
