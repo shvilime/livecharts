@@ -23,7 +23,9 @@
         <q-card style="width: 350px">
           <q-card-section class="row items-center no-wrap">
             <div>
-              <div class="text-grey-bold">Slide graph</div>
+              <div class="text-weight-bold">Значений: {{quotesStore.values.length}}</div>
+              <div class="text-weight-bold">с {{quotesStore.labels[0]}}</div>
+              <div class="text-weight-bold">по {{quotesStore.labels.slice(-1)[0]}}</div>
             </div>
 
             <q-space />
