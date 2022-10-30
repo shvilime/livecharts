@@ -7,7 +7,7 @@ export default boot(() => {
   const quotesStore = useQuotesStore();
 
   // Откроем подключение к сокет серверу
-  const socket = new WebSocket('ws://127.0.0.1:8000/websocket/open');
+  const socket = new WebSocket('/api/websocket/open');
 
   socket.addEventListener('open', () => {
     socket.send('Hello Server!');
