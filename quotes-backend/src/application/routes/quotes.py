@@ -144,7 +144,7 @@ async def get_history_prices(
             r.app.state.logger.debug(f"Количество записей по тикеру {ticker} в БД {num_records}")
 
             # Коэффициент децимации
-            factor: int = round(num_records/1000)
+            factor: int = 1 if num_records < 1000 else round(num_records/1000)
             r.app.state.logger.debug(f"Рассчитан коэффициент децимации {factor}")
 
             query: str = "SELECT q.price FROM public.quotes q WHERE q.ticker = :ticker"
