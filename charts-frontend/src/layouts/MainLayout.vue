@@ -23,7 +23,7 @@
           label-color="white"
           :options="quotesStore.tickers"
           :stack-label="false"
-          label="Choose graph .."
+          label="Выберите график .."
           style="width: 200px"
           @update:model-value="onChangeLoadTicker"/>
       </q-toolbar>
