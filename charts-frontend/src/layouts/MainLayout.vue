@@ -3,10 +3,8 @@
     <q-header elevated class="bg-primary text-white">
       <q-toolbar class="q-py-sm q-px-md">
         <q-toolbar-title>
-          <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
-          </q-avatar>
-          Skanestas Live Charts
+          <q-avatar text-color="primary" color="white" icon="query_stats"></q-avatar>
+          Live Charts
         </q-toolbar-title>
         <q-toggle
           v-if="quotesStore.selectedTicker"
