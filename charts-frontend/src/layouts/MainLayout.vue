@@ -16,6 +16,7 @@
           label="Весь период"
           @update:model-value="onChangeLoadTicker"/>
         <q-select
+          id="ticker-dropdown"
           v-model="quotesStore.selectedTicker"
           square
           dense
@@ -84,3 +85,9 @@ onMounted(() => {
 });
 
 </script>
+
+<style lang="scss">
+#ticker-dropdown {
+  color: white !important;
+}
+</style>
