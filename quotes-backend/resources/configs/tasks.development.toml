@@ -11,3 +11,12 @@
    max_instances = 1
    trigger = "interval"
    trigger_args = {seconds = 100000}
+
+ [[development.scheduler.tasks]]
+   id = "decimate_quotes"
+   jobstore = "default"
+   func = "application.core.tasks:calc_decimation"
+   replace_existing = true
+   max_instances = 1
+   trigger = "cron"
+   trigger_args = {hour = "*", minute = "40"}

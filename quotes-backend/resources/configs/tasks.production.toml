@@ -11,3 +11,12 @@
    max_instances = 1
    trigger = "interval"
    trigger_args = {seconds = 120}
+
+ [[production.scheduler.tasks]]
+   id = "decimate_quotes"
+   jobstore = "default"
+   func = "application.core.tasks:calc_decimation"
+   replace_existing = true
+   max_instances = 1
+   trigger = "interval"
+   trigger_args = {hours = 1}

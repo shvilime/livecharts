@@ -1,3 +1,4 @@
+import json
 import numpy as np
 from scipy import signal
 from http import HTTPStatus
@@ -8,7 +9,6 @@ from sqlalchemy.engine import Result
 from sqlalchemy import insert, select, text
 from fastapi import APIRouter, Request, Body, HTTPException
 
-from application.core.config import settings
 from application.routes import PRICES, DATE_FORMAT
 from application.db.schemes import QuoteScheme, Quotes, Quote
 
@@ -128,33 +128,15 @@ async def get_history_prices(
         Котировки
 
     """
-    # Модель с результатом
-    quotes: Quotes = Quotes()
-
     # Если опорная дата не задана, то присвоим текущую
     if not start:
         start = datetime.now().replace(microsecond=0)
 
     # Если не задан лимит выборки, то вернем все данные после децимации
     if not limit:
-        async with r.app.state.db.begin() as conn:
-            # Посчитаем количество записей в БД
-            query: str = "SELECT count(q.price) FROM public.quotes q WHERE q.ticker = :ticker"
-            cursor: Result = await conn.execute(text(query).bindparams(ticker=ticker))
-            num_records: int = cursor.scalar_one()
-            r.app.state.logger.debug(f"Количество записей по тикеру {ticker} в БД {num_records}")
-
-            # Коэффициент децимации
-            factor: int = 1 if num_records < settings.max_chart_points else round(num_records/settings.max_chart_points)
-            r.app.state.logger.debug(f"Рассчитан коэффициент децимации {factor}")
-
-            query: str = "SELECT q.price FROM public.quotes q WHERE q.ticker = :ticker"
-            cursor: Result = await conn.execute(text(query).bindparams(ticker=ticker))
-            # Проведем децимацию сигнала
-            data: np.ndarray = np.fromiter(cursor.yield_per(1000), dtype=np.dtype((int, 2)))[:, 0]
-            quotes.values = [Quote(created="", ticker=ticker, value=value) for value in signal.decimate(data, factor)]
-
-        return quotes
+        async with r.app.state.redis.client() as cache:
+            result: str = await cache.get(f"history_{ticker}")
+        return Quotes(**json.loads(result))
 
     # Если нужно выбрать данные по лимиту и по направлению
     async with r.app.state.redis.client() as conn:
@@ -181,6 +163,7 @@ async def get_history_prices(
             )
 
         # Заполним в модели ответа котировки
+        quotes: Quotes = Quotes()
         for item in raw.scalars():
             quotes.values.append(Quote.from_orm(item))
 
@@ -191,4 +174,45 @@ async def get_history_prices(
         if next(filter(lambda x: x.created.strftime(DATE_FORMAT) == last.strftime(DATE_FORMAT), quotes.values), None):
             quotes.start_live = True
 
-    return quotes
+    return quotes.json(by_alias=True)
+
+
+@router.get("/decimation")
+async def start_history_decimation(r: Request):
+    """
+    Рассчитывает исторические данные для формирования графика за весь период
+
+    Args:
+        r: Запрос
+
+    """
+    # Получим список тикеров
+    async with r.app.state.redis.client() as conn:
+        prices: dict = await conn.hgetall("movement") or PRICES
+        tickers: list = list(prices.keys())
+
+    # Для каждого тикера проведем децимацию данных и запишем их в кеш
+    async with r.app.state.db.begin() as conn:
+        for ticker in tickers:
+            r.app.state.logger.debug(f"Децимация исторических данных по тикеру: {ticker}")
+
+            # Посчитаем количество записей в БД
+            query: str = "SELECT count(q.price) FROM public.quotes q WHERE q.ticker = :ticker"
+            cursor: Result = await conn.execute(text(query).bindparams(ticker=ticker))
+            num_records: int = cursor.scalar_one()
+            r.app.state.logger.debug(f"Количество записей по тикеру {ticker} в БД {num_records}")
+
+            # Проведем децимацию сигнала
+            query: str = "SELECT q.price FROM public.quotes q WHERE q.ticker = :ticker"
+            cursor: Result = await conn.execute(text(query).bindparams(ticker=ticker))
+            data: np.ndarray = np.fromiter(cursor.yield_per(1000), dtype=np.dtype((int, 2)))[:, 0]
+            quotes: Quotes = Quotes()
+            quotes.values = [
+                Quote(created="", ticker=ticker, value=round(value)) for value in signal.decimate(data, 10)
+            ]
+
+            # Сохраним данные в кеш
+            async with r.app.state.redis.client() as cache:
+                await cache.set(f"history_{ticker}", quotes.json(by_alias=True))
+
+    return {"result": "OK"}
